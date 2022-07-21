@@ -28,10 +28,10 @@ def play(count: int = 0, card: bool = True) -> None:
             attack()
         else:
             print(f"not enough orbs for {to_play}")
-            play(0, card=False)
+            play(TURN, card=False)
     else:
         print(f"{to_play} does not exist")
-        play(0, card=False)
+        play(TURN, card=False)
 
 
 def attack() -> None:
@@ -81,7 +81,7 @@ def attack() -> None:
 
             FIELD_A.append(new_j)
 
-            bot_play(1)
+            bot_play(TURN)
 
         else:
             print("Enemy not available")
@@ -130,7 +130,7 @@ def bot_attack() -> None:
 
     print(f"{BOT.name} finished attack phase")
 
-    play(1)
+    play(TURN)
 
 
 def draw(n: Player = None, amount: int = 1) -> None:

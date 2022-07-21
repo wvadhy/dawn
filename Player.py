@@ -50,6 +50,7 @@ class Player(Abilities):
         return self.__card_data
 
     def add_orb(self, amount: int = 0) -> int:
+        self.__orbs = 0
         self.__orbs += amount
         return self.__orbs
 
@@ -65,19 +66,20 @@ class Player(Abilities):
         temp = self.__hand
         for i in range(len(temp)):
             if tp in temp[i][0]['N']:
-                temp.pop([i][0])
                 return 1
         return 0
 
     def check_orbs(self, cd: str = None) -> int:
 
         temp = self.__deck
+        tool = self.__hand
         tes = self.__spells
-        for i, v in zip(temp.values(), tes.values()):
+        for i, v, h in zip(temp.values(), tes.values(), range(len(tool))):
             if i[0]['N'] == cd:
                 if i[4]['C'] <= self.__orbs:
                     self.rem_orb(i[4]['C'])
                     self.add_data(i)
+                    tool.pop([h][0])
                     return 1
 
             if v[0]['N'] == cd:
