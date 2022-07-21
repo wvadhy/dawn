@@ -5,13 +5,14 @@ Just a small mini-project created out of boredom, feel free to fork and create p
 
 Features:
 - local 2 player capabilities
-- Smart BOT AI
+- BOT AI
 - Scalability with orthogonal code
-- Simple usability
+- Simple usability, easy to understand mechanics
 - User friendly and readable code
 - Detailed prints
 - Over 15 cards and spells to play with
 - Unique attributes for each card
 - In-depth gameplay loop
 - Data-caching for health, creatures on board, creatures in hand, orb count, and much more
-- Well thought out simple structuring using OOP
+
+Changelog:
