@@ -7,28 +7,28 @@ class Player(Abilities):
 
     def __init__(self, name: str = "bot"):
         super().__init__()
-        self.name = name
-        self.__health = 10
-        self.__orbs = 0
-        self.__deck = Cards.grab_deck()
-        self.__spells = Cards.grab_spells()
-        self.__hand = [self.__deck[i + random.randint(1,7)] for i in range(2)]
-        self.__card_data = []
-        self.__graveyard = []
-        self.__protected = False
+        self.name: str = name
+        self.__health: int = 10
+        self.__orbs: int = 0
+        self.__deck: list[Card] = Cards.deck()
+        self.__spells: list[Spell] = Cards.spells()
+        self.__hand: list[Card] = [self.__deck[i + random.randint(0, 6)] for i in range(2)]
+        self.__card_data: list[str] = []
+        self.__graveyard = [] # TODO: types
+        self.__protected: bool = False
 
-        self.__hand.append(self.__spells[random.randint(1, 5)])
+        self.__hand.append(self.__spells[random.randint(0, 4)])
 
     def grab_hand(self) -> int:
 
-        temp = self.__hand
         print(f"{self.name}s hand: ")
         print(f"orbs = {self.__orbs}")
-        for i in range(len(temp)):
-            print(f"{temp[i][0]['N']}")
-        return 0
+        for i in self.__hand:
+            print(i.name)
+        return 0 # ???
 
-    def get_hand(self) -> list:
+    @property
+    def hand(self) -> list[Card]:
         return self.__hand
 
     def protection(self, shield: bool) -> None:
@@ -36,9 +36,9 @@ class Player(Abilities):
 
     def draw_card(self, amount: int = 0) -> None:
         if random.randint(0,1):
-            self.__hand.append(self.__deck[random.randint(1, 10)])
+            self.__hand.append(self.__deck[random.randint(0, 9)])
         else:
-            self.__hand.append(self.__spells[random.randint(1, 5)])
+            self.__hand.append(self.__spells[random.randint(0, 4)])
 
     def add_data(self, card: str = None) -> None:
         self.__card_data.append(card)
@@ -63,9 +63,8 @@ class Player(Abilities):
 
     def check_card(self, tp: str = None) -> int:
 
-        temp = self.__hand
-        for i in range(len(temp)):
-            if tp in temp[i][0]['N']:
+        for i in self.__hand:
+            if tp == i.name:
                 return 1
         return 0
 
@@ -74,65 +73,65 @@ class Player(Abilities):
         temp = self.__deck
         tool = self.__hand
         tes = self.__spells
-        for i, v, h in zip(temp.values(), tes.values(), range(len(tool))):
-            if i[0]['N'] == cd:
-                if i[4]['C'] <= self.__orbs:
-                    self.rem_orb(i[4]['C'])
+        for i, v, h in zip(self.__deck, self.__spells, range(len(tool))):
+            if i.name == cd:
+                if i.c <= self.__orbs:
+                    self.rem_orb(i.c)
                     self.add_data(i)
-                    tool.pop([h][0])
+                                            # ! ISSUE HERE with tool.pop([h][0])
+                                            # ? I'M NOT ENTIRELY SURE HOW YOUR 
+                                            # ? GAME WORKS SO I WILL EXPLAIN IN 
+                                            # ? MY PR AND HOPEFULLY YOU CAN FIX 
+                                            # ? YOUR ISSUE.
+                    tool.pop([h][0]) 
                     return 1
 
-            if v[0]['N'] == cd:
-                if v[2]['C'] <= self.__orbs:
-                    spell = v[0]['N']
-                    self.rem_orb(v[2]['C'])
-                    eval(f"self.{spell}(self.name)")
+            if v.name == cd:
+                if v.c <= self.__orbs:
+                    spell = v.name
+                    self.rem_orb(v.c)
+                    eval(f"self.{spell}(self.name)") # !NONONONONONONONONONONONONO
                     return 1
         return 0
 
     def mod_deck(self, item: str = None, mod: str = None) -> None:
 
-        temp = self.__deck
-        for i in temp.values():
-            if i[0]['N'] == item:
-                i[1]['HP'] = int(mod)
+        for i in self.__deck:
+            if i.name == item:
+                i.hp = int(mod)
 
     def get_card_display(self, name: str = None) -> str:
 
-        temp = self.__deck
-        for i in temp.values():
-            if i[0]['N'] == name and i[1]['HP']:
-                return f"{i[0]['N']} HP: {str(i[1]['HP'])} : AP: {str(i[2]['AP'])}"
+        for i in self.__deck:
+            if i.name == name and i.hp:
+                return f"{i.name} HP: {i.hp} : AP: {i.ap}"
         return "nil"
 
-    def get_card_details(self, vals: str = None) -> list:
+    def get_card_details(self, vals: str = None) -> Card:
 
-        for i in self.__deck.values():
-            if vals in i[0]['N']:
+        for i in self.__deck:
+            if vals in i.name:
                 return i
-        return []
 
-    def offense(self, lhs = None, rhs = None) -> tuple:
+    def offense(self, lhs = None, rhs = None) -> tuple[int, int]:
 
         l_details = self.get_card_details(vals=lhs)
         r_details = self.get_card_details(vals=rhs)
 
-        l_details[1]['HP'] -= r_details[2]['AP']
-        r_details[1]['HP'] -= l_details[2]['AP']
+        l_details.hp -= r_details.ap
+        r_details.hp -= l_details.ap
 
-        if l_details[1]['HP'] <= 0:
-            print(f"{l_details[0]['N']} has been killed!")
-            self.send_to_graveyard(l_details[0]['N'])
+        self.evaluate_life(l_details)
+        self.evaluate_life(r_details)
+
+        return l_details.hp, r_details.hp
+
+    def evaluate_life(self, details: Card) -> None:
+        if details.hp <= 0:
+            print(f"{details.name} has been killed!")
+            self.send_to_graveyard(details.name)
         else:
-            print("%s has %d health remaining!" % (l_details[0]['N'], l_details[1]['HP']))
-
-        if r_details[1]['HP'] <= 0:
-            print(f"{r_details[0]['N']} has been killed!")
-            self.send_to_graveyard(r_details[0]['N'])
-        else:
-            print("%s has %d health remaining!" % (r_details[0]['N'], r_details[1]['HP']))
-
-        return l_details[1]['HP'], r_details[1]['HP']
+            print("%s has %d health remaining!" % (details.name, details.hp))
 
 
 
