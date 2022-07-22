@@ -95,16 +95,15 @@ def bot_play(count: int = 0) -> None:
 
     draw(BOT)
 
-    global TURN
+    global TURN # TODO: ELIMINATE GLOBALS
     TURN += 1
 
     BOT.add_orb(count)
 
-    for i in BOT.get_hand():
-        temp_name = i[0]['N']
-        if BOT.check_orbs(temp_name):
-            print(f"{BOT.name} played {temp_name}!")
-            FIELD_B.append(BOT.get_card_display(temp_name))
+    for i in BOT.hand:
+        if BOT.check_orbs(i.name):
+            print(f"{BOT.name} played {i.name}!")
+            FIELD_B.append(BOT.get_card_display(i.name))
             break
 
     print(f"{BOT.name} finished card phase")
@@ -115,7 +114,7 @@ def bot_play(count: int = 0) -> None:
 def bot_attack() -> None:
 
     if not FIELD_A:
-        pass
+        pass 
     else:
 
         rand_joined = ''.join(FIELD_B[random.randint(0,len(FIELD_B)-1)])

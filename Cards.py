@@ -1,28 +1,47 @@
+class Card:
+    
+    def __init__(self, name, hp, ap, sp, c):
+        self.name = name
+        self.hp = hp
+        self.ap = ap
+        self.sp = sp
+        self.c = c
+
+class Spell:
+
+    def __init__(self, name, desc, c):
+        self.name = name
+        self.desc = desc
+        self.c = c
+
 class Cards:
 
-    @staticmethod
-    def grab_deck() -> dict:
-        deck = {
-            1: [{'N': "soldier"}, {'HP': 2}, {'AP': 1}, {'SP': 1}, {'C': 1}],
-            2: [{'N': "monk"}, {'HP': 3}, {'AP': 1}, {'SP': 1}, {'C': 2}],
-            3: [{'N': "crab"}, {'HP': 4}, {'AP': 1}, {'SP': 1}, {'C': 3}],
-            4: [{'N': "hyena"}, {'HP': 2}, {'AP': 3}, {'SP': 1}, {'C': 3}],
-            5: [{'N': "behemoth"}, {'HP': 10}, {'AP': 3}, {'SP': 1}, {'C': 6}],
-            6: [{'N': "cyclops"}, {'HP': 6}, {'AP': 4}, {'SP': 1}, {'C': 5}],
-            7: [{'N': "dragon"}, {'HP': 10}, {'AP': 10}, {'SP': 1}, {'C': 10}],
-            8: [{'N': "reaper"}, {'HP': 2}, {'AP': 10}, {'SP': 1}, {'C': 7}],
-            9: [{'N': "bowman"}, {'HP': 1}, {'AP': 2}, {'SP': 1}, {'C': 1}],
-            10: [{'N': "prince"}, {'HP': 4}, {'AP': 7}, {'SP': 1}, {'C': 5}]
-        }
-        return deck
+    _deck = [
+        Card("monk", 3, 1, 1, 2),
+        Card("soldier", 2, 1, 1, 1),
+        Card("crab", 4, 1, 1, 3),
+        Card("hyena", 2, 3, 1, 3),
+        Card("behemoth", 10, 3, 1, 6),
+        Card("cyclops", 6, 4, 1, 5),
+        Card("dragon", 10, 10, 1, 10),
+        Card("reaper", 2, 10, 1, 7),
+        Card("bowman", 1, 2, 1, 1),
+        Card("prince", 4, 7, 1, 5)
+    ]
 
     @staticmethod
-    def grab_spells() -> dict:
-        spells = {
-            1: [{'N': "probation"}, {'E': "target cannot attack for one round"}, {'C': 3}],
-            2: [{'N': "tug"}, {'E': "draw an extra 2 cards at the start of next round"}, {'C': 2}],
-            3: [{'N': "pulverise"}, {'E': "kill enemy target"}, {'C': 6}],
-            4: [{'N': "blind"}, {'E': "enemy target has a 50% chance of attacking one of its own for 2 rounds"}, {'C': 4}],
-            5: [{'N': "revive"}, {'E': "resurrect a random card from your graveyard"}, {'C': 5}]
-        }
-        return spells
+    def deck() -> dict: 
+        return Cards._deck.copy()
+
+    _spells = [
+        Spell("probation", "target cannot attack for one round", 3),
+        Spell("tug", "draw an extra 2 cards at the start of next round", 2),
+        Spell("pulverise", "kill enemy target", 6),
+        Spell("blind", "enemy target has a 50% chance of attacking one of its own for 2 rounds", 4),
+        Spell("revive", "resurrect a random card from your graveyard", 5)
+    ]
+
+    @staticmethod
+    def spells() -> dict:
+        return Cards._spells.copy()
+
